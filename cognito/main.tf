@@ -37,6 +37,6 @@ resource "aws_cognito_user_pool_client" "tic_tac_toe_user_pool_client" {
 }
 
 resource "aws_cognito_user_pool_domain" "tic_tac_toe_user_pool_domain" {
-  domain = "tic-tac-toe-domain"
+  domain = "tic-tac-toe-domain-gddcalmer"
   user_pool_id = aws_cognito_user_pool.tic_tac_toe_user_pool.id
 }
