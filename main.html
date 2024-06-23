@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Main Page</h2>
+        <div class="button-group">
+            <a href="login.html" class="button">Login</a>
+            <a id="enter-game" href="index.html" class="button" style="display: none;">Enter Game</a>
+        </div>
+    </div>
+    <script>
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        if (isLoggedIn) {
+            document.getElementById('enter-game').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
