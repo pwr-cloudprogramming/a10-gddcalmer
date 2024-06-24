@@ -29,11 +29,11 @@
     <script src="index.js"></script>
     <script>
         // Redirect to main page if not logged in
-        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const isLoggedIn = localStorage.getItem('idToken');
         if (!isLoggedIn) {
-            window.location.href = 'main.html';
+            window.location.href = 'login.html';
         }
     </script>
-    <script src="amazon-cognito-identity.min.js"></script>
+    
 </body>
 </html>

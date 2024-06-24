@@ -12,10 +12,10 @@
         <form id="login-form" class="form">
             <h2>Login</h2>
             <div class="input-group">
-                <input type="email" id="email" placeholder="Email" required>
+                <input type="email" id="loginEmail" placeholder="Email" required>
             </div>
             <div class="input-group">
-                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
             </div>
             <button type="submit">Login</button>
             <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
@@ -25,18 +25,67 @@
     <script>
         document.getElementById('login-form').addEventListener('submit', function(event) {
             event.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
 
-            // Simple login logic (replace with real authentication in a real app)
-            if (email === 'user@example.com' && password === 'password') {
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = 'main.html';
-            } else {
-                alert('Invalid email or password');
+            const poolData = {
+            UserPoolId: 'us-east-1_wow8RCFhv', // Your user pool id here
+            ClientId: '36dcpapsfk7cse8p3qpk4hov73'// Your client id here
+            };
+            const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+        
+            const authenticationData = {
+                Username: email,
+                Password: password,
+            };
+            const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+        
+            const userData = {
+                Username: email,
+                Pool: userPool,
+            };
+
+
+            const cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+        
+            cognitoUser.authenticateUser(authenticationDetails, {
+                onSuccess: function (result) {
+                    const idToken = result.getIdToken().getJwtToken(); // Get the ID token
+                    // Save the ID token to local storage
+                    localStorage.setItem('idToken', idToken);
+
+                    const decodedIdToken = parseJwt(idToken);
+                    const displayName = decodedIdToken.name || decodedIdToken.email || 'User';
+
+                    localStorage.setItem('name', displayName);
+                    
+                    // Redirect to home page or perform any other action
+                    window.location.href = 'index.html';
+
+                    // Wait for the window to finish navigating to the new page
+                },
+                onFailure: function (err) {
+                    alert('Error signing in: ' + err.message);
+                },
+            });
+
+            function parseJwt(token) {
+            if (!token) {
+                return {};
             }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        };
+
         });
     </script>
     <script src="amazon-cognito-identity.min.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+
 </body>
 </html>

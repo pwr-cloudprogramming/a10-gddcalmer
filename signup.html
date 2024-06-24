@@ -6,25 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="amazon-cognito-identity.min.js"></script>
+
 </head>
 <body>
     <div class="container">
-        <form action="signup.html" method="POST" class="form">
+        <form id="signup-form" class="form">
             <h2>Sign Up</h2>
             <div class="input-group">
-                <input type="email" name="email" placeholder="Email" required>
+                <input type="email" id="email" placeholder="Email" required>
             </div>
             <div class="input-group">
-                <input type="text" name="name" placeholder="Name" required>
+                <input type="text" id="name" placeholder="Name" required>
             </div>
             <div class="input-group">
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" id="password" placeholder="Password" required>
             </div>
             <button type="submit">Sign Up</button>
             <p>Already have an account? <a href="login.html">Login</a></p>
             <a href="main.html" class="button">Back to Main Page</a>
         </form>
     </div>
-    <script src="amazon-cognito-identity.min.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
+    <script>
+        
+
+        const poolData = {
+        UserPoolId: 'us-east-1_wow8RCFhv', // Your user pool id here
+        ClientId: '36dcpapsfk7cse8p3qpk4hov73'// Your client id here
+    };
+    const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+        document.getElementById('signup-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const name = document.getElementById('name').value;
+        const password = document.getElementById('password').value;
+    
+        const attributeList = [];
+        const dataEmail = {
+            Name: 'email',
+            Value: email,
+        };
+        const dataName = {
+            Name: 'name',
+            Value: name,
+        };
+        const attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+        const attributeName = new AmazonCognitoIdentity.CognitoUserAttribute(dataName);
+    
+        attributeList.push(attributeEmail);
+        attributeList.push(attributeName);
+    
+        userPool.signUp(email, password, attributeList, null, function (err, result) {
+            const cognitoUser = result.user;
+            window.location.href = 'verify.html?username=' + encodeURIComponent(email);
+            });
+        });
+    </script>
 </body>
 </html>
