@@ -27,8 +27,8 @@
             event.preventDefault();
 
             const poolData = {
-            UserPoolId: 'us-east-1_wow8RCFhv', // Your user pool id here
-            ClientId: '36dcpapsfk7cse8p3qpk4hov73'// Your client id here
+            UserPoolId: 'us-east-1_wow8RCFhv', 
+            ClientId: '36dcpapsfk7cse8p3qpk4hov73'
             };
             const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
             const email = document.getElementById('loginEmail').value;
@@ -51,7 +51,7 @@
             cognitoUser.authenticateUser(authenticationDetails, {
                 onSuccess: function (result) {
                     const idToken = result.getIdToken().getJwtToken(); // Get the ID token
-                    // Save the ID token to local storage
+                    
                     localStorage.setItem('idToken', idToken);
 
                     const decodedIdToken = parseJwt(idToken);
@@ -59,10 +59,10 @@
 
                     localStorage.setItem('name', displayName);
                     
-                    // Redirect to home page or perform any other action
+         
                     window.location.href = 'index.html';
 
-                    // Wait for the window to finish navigating to the new page
+                   
                 },
                 onFailure: function (err) {
                     alert('Error signing in: ' + err.message);
